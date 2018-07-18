@@ -29,6 +29,16 @@
   }).addTo(map);
 
 
+  var LeafIcon = L.Icon.extend({
+      options: {
+          shadowUrl: "{% static 'leaflet/images/marker-shadow.png' %}",
+          iconSize:     [38, 95],
+          shadowSize:   [50, 64],
+          iconAnchor:   [22, 94],
+          shadowAnchor: [4, 62],
+          popupAnchor:  [-3, -76]
+      }
+  });
   var greenIcon = new LeafIcon({iconUrl: "{% static 'leaflet/images/marker-icon.png' %}"})
   L.marker([55.7158, 37.5537], {icon: greenIcon}).addTo(map);
   </script>
