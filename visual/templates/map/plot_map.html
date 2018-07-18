@@ -28,7 +28,9 @@
   	attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
   }).addTo(map);
 
-  L.marker([55.7158, 37.5537]).addTo(map);
+
+  var greenIcon = new LeafIcon({iconUrl: "{% static 'leaflet/images/marker-icon.png' %}"})
+  L.marker([55.7158, 37.5537], {icon: greenIcon}).addTo(map);
   </script>
 
     <script>
