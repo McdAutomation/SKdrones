@@ -129,7 +129,3 @@ STATICFILES_DIRS = [
 #  Add configuration for static files storage using whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #STATIC_ROOT = os.path.join(BASE_DIR, "static")
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'visual/templates'),
-    # Add to this list all the locations containing your static files
-)
