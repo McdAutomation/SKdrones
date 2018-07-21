@@ -1,0 +1,100 @@
+{% load static %}
+<html>
+<head>
+  <title>A Leaflet map!</title>
+  <link href="{% static 'leaflet/leaflet.css' %}" rel="stylesheet">
+    <script src="{% static 'leaflet/leaflet.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <style>
+    #map{ height: 70% }
+  </style>
+</head>
+<body>
+
+  <div class="select">
+      <select  name="sources" id="sources" class="selectYear"> <!--custom-select sources selectPriority-->
+        <option value="" disabled selected>Select year</option>
+        <option name="P1" value="2018">2018</option>
+        <option name="P2" value="2014">2014</option>
+      </select>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+  function plotPoints(){
+        url = "http://127.0.0.1:5000/storesCDS/";
+        var code = $("#sources option:selected").val();
+        var ds = Bokeh.documents[0].get_model_by_name('circleCDS');
+        $.get(url, { d: code} )
+            .done(function(data){
+        var ds = Bokeh.documents[0].get_model_by_name('circleCDS');
+        ds.attributes.data_source.data['x']=data['x'];
+        ds.attributes.data_source.data['y']=data['y'];
+        ds.attributes.data_source.data['color']=data['color'];
+        ds.attributes.data_source.data['name']=data['name'];
+        ds.attributes.data_source.data['time']=data['time'];
+        ds.attributes.data_source.data['nsn']=data['nsn'];
+        ds.attributes.data_source.data['addressline']=data['addressline'];
+        ds.attributes.data_source.change.emit();
+    });
+}
+  function callFunctions(){
+        $.when( plotPoints() ).done(function() {
+            //setTimeout(getShadedData,500);
+            //getShadedData();
+        });
+  }
+  $( "select.selectPriority" ).change(callFunctions);
+  function openwindow(){
+    var popupWindow = window.open("open_popup_window", "MsgWindow", "top=200, left=200, width=800, height=500");
+  }
+
+  // initialize the map
+  var map = L.map('map').setView([55.7093305, 37.55216446], 3);
+
+
+  L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    minZoom: 3,
+  	attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+  }).addTo(map);
+
+
+  var LeafIcon = L.Icon.extend({
+      options: {
+          //shadowUrl: "{% static 'leaflet/images/marker-shadow.png' %}",
+          iconSize:     [25, 41],
+          //shadowSize:   [50, 64],
+          //iconAnchor:   [22, 94],
+          //shadowAnchor: [4, 62],
+          //popupAnchor:  [-3, -76]
+      }
+  });
+  var greenIcon = new LeafIcon({iconUrl: "{% static 'leaflet/images/marker-icon.png' %}"})
+  L.marker([55.7158, 37.5537], {icon: greenIcon}).addTo(map);
+  </script>
+
+    <script>
+
+        {% for stadium in stadiums %}
+      marker = L.marker([{{stadium.lat}}, {{stadium.long}}]).addTo(map);
+
+    marker.bindPopup("<div>Name:</div><br>"+"{{stadium.name}}");
+
+marker.bindPopup(function() {
+
+    var div = document.createElement("div");
+    $.get("/popup",{data:"{{stadium}}"}).done(function(data) {
+
+
+        div.innerHTML = "Total Games Played: "+data + "<br><a href='#' onclick=openwindow();>click here!!</a>";
+    });
+
+    return div;
+});
+
+    {% endfor %}
+  </script>
+</body>
+</html>
