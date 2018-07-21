@@ -23,7 +23,6 @@
 
   <script>
   function openWindow(name){
-    console.log(name);
     var popupWindow = window.open("open_popup_window", "MsgWindow", "top=200, left=200, width=800, height=500");
     url = "{% url "visual:popup" %}";
 
@@ -65,6 +64,18 @@
   function plotPoints(){
         url = "{% url "visual:filter_by_year" %}";
         var code = $("#sources option:selected").val();
+
+        var markerIcon = L.icon({
+        iconUrl: '{% static "leaflet/images/marker-icon.png" %}',
+        shadowUrl: '{% static "leaflet/images/marker-shadow.png" %}',
+
+        //iconSize:     [100, 41], // size of the icon
+        //shadowSize:   [50, 64], // size of the shadow
+        //iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        //shadowAnchor: [4, 62],  // the same for the shadow
+        //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
         $.get(url, { data: code} )
             .done(function(data){
               try{
@@ -77,7 +88,7 @@
               }
               $.get("/popup",{d:JSON.stringify(data)}).done(function(data){
                 for(i=0;i<data['dj_data'].length;i++){
-                  marker = L.marker([data['dj_data'][i].lat, data['dj_data'][i].long]).addTo(map);
+                  marker = L.marker([data['dj_data'][i].lat, data['dj_data'][i].long],{icon:markerIcon}).addTo(map);
 
                   var div = document.createElement("div");
                   div.innerHTML = data['dj_data'][i].name + '<br>' +
@@ -104,28 +115,6 @@
     minZoom: 3,
   	attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
   }).addTo(map);
-  </script>
-
-  <script>
-
-        {% for stadium in stadiums %}
-      marker = L.marker([{{stadium.lat}}, {{stadium.long}}]).addTo(map);
-
-    marker.bindPopup("<div>Name:</div><br>"+"{{stadium.name}}");
-
-marker.bindPopup(function() {
-
-    var div = document.createElement("div");
-    $.get("/popup",{data:"{{stadium}}"}).done(function(data) {
-
-
-        div.innerHTML = "Total Games Played: "+data + "<br><a href='#' onclick=openwindow();>click here!!</a>";
-    });
-
-    return div;
-});
-
-    {% endfor %}
   </script>
 </body>
 </html>
