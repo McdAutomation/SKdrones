@@ -1,27 +1,144 @@
 {% load static %}
+<!DOCTYPE html>
 <html>
+<!--
+Template Name: Trealop
+Author: <a href="https://www.os-templates.com/">OS Templates</a>
+Author URI: https://www.os-templates.com/
+Copyright: OS-Templates.com
+Licence: Free to use under our free template licence terms
+Licence URI: https://www.os-templates.com/template-terms
+-->
+<html lang="">
+<!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
 <head>
-  <title>A Leaflet map!</title>
-  <link href="{% static 'leaflet/leaflet.css' %}" rel="stylesheet">
-    <script src="{% static 'leaflet/leaflet.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-  <style>
-    #map{ height: 70% }
-  </style>
+<title>Trealop</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link href="{% static 'layout/styles/layout.css' %}" rel="stylesheet" type="text/css" media="all">
+<style>
+.small {
+  font-size: .7em;
+}
+/* Custom dropdown */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px; /* demo only */
+}
+.custom-dropdown select {
+  background-color: #1abc9c;
+  color: #fff;
+  font-size: inherit;
+  padding: .5em;
+  padding-right: 2.5em;
+  border: 0;
+  margin: 0;
+  border-radius: 3px;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -webkit-appearance: button; /* hide default arrow in chrome OSX */
+}
+.custom-dropdown::before,
+.custom-dropdown::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.custom-dropdown::after { /*  Custom dropdown arrow */
+  content: "\25BC";
+  height: 1em;
+  font-size: .625em;
+  line-height: 1;
+  right: 1.2em;
+  top: 50%;
+  margin-top: -.5em;
+}
+.custom-dropdown::before { /*  Custom dropdown arrow cover */
+  width: 2em;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 0 3px 3px 0;
+}
+.custom-dropdown select[disabled] {
+  color: rgba(0,0,0,.3);
+}
+.custom-dropdown select[disabled]::after {
+  color: rgba(0,0,0,.1);
+}
+.custom-dropdown::before {
+  background-color: rgba(0,0,0,.15);
+}
+.custom-dropdown::after {
+  color: rgba(0,0,0,.4);
+}
+</style>
+<!--------------------------------------------->
+<title>A Leaflet map!</title>
+<link href="{% static 'leaflet/leaflet.css' %}" rel="stylesheet">
+  <script src="{% static 'leaflet/leaflet.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<style>
+  #map{ height: 560px; width: 1133px;}
+</style>
+<!--------------------------------------------->
 </head>
-<body>
+<body id="top">
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
 
-  <div class="select">
-      <select  name="sources" id="sources" class="selectYear"> <!--custom-select sources selectPriority-->
-        <option value="" disabled selected>Select year</option>
-        <option name="P1" value="2018">2018</option>
-        <option name="P2" value="2014">2014</option>
-      </select>
-  </div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row1">
+  <header id="header" class="hoc clear">
+    <div id="logo" class="fl_left">
+      <!-- ################################################################################################ -->
+      <h1><a href="">Soccer</a></h1>
+      <!-- ################################################################################################ -->
+    </div>
+    <nav id="mainav" class="fl_right">
+      <!-- ################################################################################################ -->
+      <ul class="clear">
+        <li class="active"><a href="">Home</a></li>
+        <li><a href="/admin">Admin</a></li>
+      </ul>
+      <!-- ################################################################################################ -->
+    </nav>
+  </header>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div id="map"></div>
+<div id="sidebar_home_right">
+  <span class="custom-dropdown">
+          <select id="sources" class="selectYear">
+              <option selected disabled>Select World Cup Year</option>
+              <option value="2018">2018</option>
+              <option value="2014">2014</option>
+          </select>
+      </span>
+</div>
+<style>
+#sidebar_home_right {
+    background-image: url("static/images/messi.jpg");
+    background-color: #cccccc;
+    background-position: -80% 0;
+    position: absolute;
+    left:1133px;
+    top:99px;
+    width: 220px;
+    height: 560px;
+}
 
-  <div id="map"></div>
+</style>
 
-  <script>
+<script>
   function openWindow(name){
     var popupWindow = window.open("open_popup_window", "MsgWindow", "top=200, left=200, width=800, height=500");
     url = "{% url "visual:popup" %}";
@@ -69,9 +186,9 @@
         iconUrl: '{% static "leaflet/images/marker-icon.png" %}',
         shadowUrl: '{% static "leaflet/images/marker-shadow.png" %}',
 
-        //iconSize:     [100, 41], // size of the icon
+        iconSize:     [25, 41], // size of the icon
         //shadowSize:   [50, 64], // size of the shadow
-        //iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        iconAnchor:   [12,36], // point of the icon which will correspond to marker's location
         //shadowAnchor: [4, 62],  // the same for the shadow
         //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
@@ -96,9 +213,10 @@
                   marker.bindPopup(div);
                   markers.push(marker);
                 }
+                map.panTo(new L.LatLng(data['dj_data'][0].lat, data['dj_data'][0].long));
               });
     });
-}
+  }
   function callFunctions(){
         $.when( plotPoints() ).done(function() {
         });
@@ -113,8 +231,97 @@
   L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
     maxZoom: 19,
     minZoom: 3,
-  	attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+    attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
   }).addTo(map);
-  </script>
+</script>
+<!--
+<div class="wrapper bgded overlay gradient" style="background-image:url('images/demo/backgrounds/01.png');">
+  <div id="pageintro" class="hoc clear">
+
+    <article>
+
+    </article>
+
+  </div>
+</div>
+-->
+<div class="wrapper row4">
+  <footer id="footer" class="hoc clear">
+    <!-- ################################################################################################ -->
+    <div class="one_quarter first">
+      <h6 class="heading">A convallis ultricies</h6>
+      <p>Luctus et dolor nulla facilisi fusce sit amet magna non odio molestie egestas nullam id odio.</p>
+      <p class="btmspace-30">Quis risus placerat aliquam nunc nec nunc morbi vel nisi sit amet orci adipiscing pharetra [<a href="#"><i class="fas fa-arrow-right"></i></a>]</p>
+      <ul class="faico clear">
+        <li><a class="faicon-facebook" href="#"><i class="fab fa-facebook"></i></a></li>
+        <li><a class="faicon-google-plus" href="#"><i class="fab fa-google-plus-g"></i></a></li>
+        <li><a class="faicon-linkedin" href="#"><i class="fab fa-linkedin"></i></a></li>
+        <li><a class="faicon-twitter" href="#"><i class="fab fa-twitter"></i></a></li>
+        <li><a class="faicon-vk" href="#"><i class="fab fa-vk"></i></a></li>
+      </ul>
+    </div>
+    <div class="one_quarter">
+      <h6 class="heading">Mauris lorem curabitur</h6>
+      <ul class="nospace linklist">
+        <li>
+          <article>
+            <p class="nospace btmspace-10"><a href="#">Semper lacus id nibh etiam iaculis viverra pede proin laoreet dolor ut nunc&hellip;</a></p>
+            <time class="block font-xs" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
+          </article>
+        </li>
+        <li>
+          <article>
+            <p class="nospace btmspace-10"><a href="#">Donec turpis aliquam sapien est sodales id elementum at molestie in felis class&hellip;</a></p>
+            <time class="block font-xs" datetime="2045-04-05">Thursday, 5<sup>th</sup> April 2045</time>
+          </article>
+        </li>
+      </ul>
+    </div>
+    <div class="one_quarter">
+      <h6 class="heading">Eget mauris egestas</h6>
+      <ul class="nospace linklist">
+        <li><a href="#">Aptent taciti sociosqu ad</a></li>
+        <li><a href="#">Litora torquent per conubia</a></li>
+        <li><a href="#">Nostra per inceptos himenaeos</a></li>
+        <li><a href="#">Nam semper ipsum et purus</a></li>
+        <li><a href="#">Suspendisse sed quam aliquam</a></li>
+      </ul>
+    </div>
+    <div class="one_quarter">
+      <h6 class="heading">Volutpat quisque mauris</h6>
+      <p class="nospace btmspace-15">Viverra etiam dictum euismod lectus vestibulum tincidunt erat vel molestie.</p>
+      <form method="post" action="#">
+        <fieldset>
+          <legend>Newsletter:</legend>
+          <input class="btmspace-15" type="text" value="" placeholder="Name">
+          <input class="btmspace-15" type="text" value="" placeholder="Email">
+          <button type="submit" value="submit">Submit</button>
+        </fieldset>
+      </form>
+    </div>
+    <!-- ################################################################################################ -->
+  </footer>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row5">
+  <div id="copyright" class="hoc clear">
+    <!-- ################################################################################################ -->
+    <p class="fl_left">Copyright &copy; 2018 - All Rights Reserved - <a href="#">Domain Name</a></p>
+    <p class="fl_right">Template by <a target="_blank" href="https://www.os-templates.com/" title="Free Website Templates">OS Templates</a></p>
+    <!-- ################################################################################################ -->
+  </div>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<a id="backtotop" href="#top"><i class="fas fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS-->
+
+<script src="{% static 'layout/scripts/jquery.backtotop.js' %}"></script>
+<script src="{% static 'layout/scripts/jquery.min.js' %}"></script>
+<script src="{% static 'layout/scripts/jquery.mobilemenu.js' %}"></script>
+
 </body>
 </html>
